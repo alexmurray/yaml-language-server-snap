@@ -29,9 +29,11 @@ apps:
     command: yaml-language-server
     plugs:
       - network
+      - home
 
 parts:
   yaml-language-server:
     plugin: nodejs
+    node-engine: 14.15.3
     node-packages:
       - yaml-language-server
