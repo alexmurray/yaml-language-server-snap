@@ -1,5 +1,5 @@
 name: yaml-language-server
-version: '0.16.0'
+version: '1.11.0'
 summary: YAML Language Server
 description: |
   Features
@@ -37,7 +37,7 @@ parts:
     plugin: nodejs
     source: https://github.com/redhat-developer/yaml-language-server.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
-    nodejs-version: 15.0.1
+    nodejs-version: 16.19.0
     override-build: |
       snapcraftctl build
       ../npm/bin/yarn run build
