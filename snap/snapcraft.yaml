@@ -1,5 +1,5 @@
 name: yaml-language-server
-version: '1.11.0'
+version: '1.14.0'
 summary: YAML Language Server
 description: |
   Features
@@ -23,7 +23,7 @@ description: |
 
 grade: stable
 confinement: strict
-base: core18
+base: core22
 
 apps:
   yaml-language-server:
@@ -34,10 +34,11 @@ apps:
 
 parts:
   yaml-language-server:
-    plugin: nodejs
+    plugin: npm
     source: https://github.com/redhat-developer/yaml-language-server.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
-    nodejs-version: 16.19.0
+    npm-include-node: true
+    npm-node-version: 20.11.0
     override-build: |
       snapcraftctl build
       ../npm/bin/yarn run build
