@@ -41,5 +41,6 @@ parts:
     npm-node-version: 20.11.0
     override-build: |
       snapcraftctl build
+      corepack yarn install
       corepack yarn run build
       cp -r out $SNAPCRAFT_PART_INSTALL
