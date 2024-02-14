@@ -43,4 +43,4 @@ parts:
       snapcraftctl build
       corepack yarn install
       corepack yarn run build
-      cp -r out $SNAPCRAFT_PART_INSTALL
+      cp -r out $SNAPCRAFT_PART_INSTALL/lib/node_modules/yaml-language-server/
