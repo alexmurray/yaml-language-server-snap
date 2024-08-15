@@ -37,7 +37,7 @@ parts:
     source: https://github.com/redhat-developer/yaml-language-server.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
     npm-include-node: true
-    npm-node-version: 20.11.0
+    npm-node-version: 20.16.0
     override-build: |
       snapcraftctl build
       corepack yarn install
