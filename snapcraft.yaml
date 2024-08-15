@@ -39,7 +39,12 @@ parts:
     npm-include-node: true
     npm-node-version: 20.16.0
     override-build: |
-      snapcraftctl build
-      corepack yarn install
-      corepack yarn run build
+      # this will just install node and run npm install -g into
+      # CRAFT_PARTS_INSTALL - we need to also actually compile the typescript
+      # source into javascript
+      craftctl default
+      # ensure devDependencies get installed by unsetting NODE_ENV as production
+      unset NODE_ENV
+      npm install
+      npm run compile
       cp -r out $SNAPCRAFT_PART_INSTALL/lib/node_modules/yaml-language-server/
