@@ -1,5 +1,5 @@
 name: yaml-language-server
-version: '1.14.0'
+version: '1.15.0'
 summary: YAML Language Server
 description: |
   Features
@@ -30,7 +30,6 @@ apps:
     command: bin/yaml-language-server
     plugs:
       - network
-      - home
 
 parts:
   yaml-language-server:
