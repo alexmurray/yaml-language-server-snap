@@ -36,8 +36,8 @@ parts:
     plugin: npm
     source: https://github.com/redhat-developer/yaml-language-server.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
+    npm-node-version: 20.17.0
     npm-include-node: true
-    npm-node-version: 20.16.0
     override-build: |
       # this will just install node and run npm install -g into
       # CRAFT_PARTS_INSTALL - we need to also actually compile the typescript
