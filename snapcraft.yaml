@@ -1,5 +1,5 @@
 name: yaml-language-server
-version: '1.15.0'
+version: '1.16.0'
 summary: YAML Language Server
 description: |
   Features
@@ -23,7 +23,7 @@ description: |
 
 grade: stable
 confinement: strict
-base: core22
+base: core24
 
 apps:
   yaml-language-server:
