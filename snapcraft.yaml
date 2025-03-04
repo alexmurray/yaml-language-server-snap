@@ -29,6 +29,7 @@ apps:
   yaml-language-server:
     command: bin/yaml-language-server
     plugs:
+      - home
       - network
 
 parts:
