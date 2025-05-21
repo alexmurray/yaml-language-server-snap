@@ -37,7 +37,7 @@ parts:
   yaml-language-server:
     plugin: npm
     source: https://github.com/redhat-developer/yaml-language-server.git
-    source-tag: $SNAPCRAFT_PROJECT_VERSION
+    source-tag: $CRAFT_PROJECT_VERSION
     npm-node-version: 22.14.0
     npm-include-node: true
     override-build: |
