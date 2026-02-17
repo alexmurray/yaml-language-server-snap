@@ -38,7 +38,7 @@ parts:
     plugin: npm
     source: https://github.com/redhat-developer/yaml-language-server.git
     source-tag: $CRAFT_PROJECT_VERSION
-    npm-node-version: 24.12.0
+    npm-node-version: 24.13.1
     npm-include-node: true
     override-build: |
       # this will just install node and run npm install -g into
