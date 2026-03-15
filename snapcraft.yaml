@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/canonical/snapcraft/main/schema/snapcraft.json
 name: yaml-language-server
 version: 1.21.0
 
@@ -38,7 +39,7 @@ parts:
     plugin: npm
     source: https://github.com/redhat-developer/yaml-language-server.git
     source-tag: $CRAFT_PROJECT_VERSION
-    npm-node-version: 24.13.1
+    npm-node-version: 24.14.0
     npm-include-node: true
     override-build: |
       # this will just install node and run npm install -g into
