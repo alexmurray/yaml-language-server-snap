@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/canonical/snapcraft/main/schema/snapcraft.json
 name: yaml-language-server
-version: 1.21.0
+version: 1.22.0
 
 summary: YAML Language Server
 description: |
