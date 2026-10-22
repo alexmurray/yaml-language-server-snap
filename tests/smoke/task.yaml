@@ -1,0 +1,16 @@
+summary: yaml-language-server installs and reports the expected version
+
+execute: |
+  command -v yaml-language-server | MATCH '^/snap/bin/yaml-language-server$'
+
+  # the reported version should be the one the snap was built from
+  version=$(snap list yaml-language-server | awk '$1 == "yaml-language-server" { print $2 }')
+  yaml-language-server --version | MATCH "^${version}\$"
+
+  yaml-language-server --help | MATCH '^  --stdio '
+  yaml-language-server --help | MATCH '^  --socket=<number> '
+
+  # it needs home to read workspace files and schemas, and network to fetch
+  # remote schemas - both should be auto-connected
+  snap connections yaml-language-server | MATCH '^home +yaml-language-server:home +:home '
+  snap connections yaml-language-server | MATCH '^network +yaml-language-server:network +:network '

@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=./schema.json
+name: Rex
+kind: dog
+age: 3

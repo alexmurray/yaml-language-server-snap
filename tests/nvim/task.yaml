@@ -1,0 +1,13 @@
+summary: a real editor LSP client (neovim) can use yaml-language-server
+
+prepare: |
+  # neovim's built-in LSP client, run headless - the snap rather than apt as
+  # the archive's neovim predates the LSP client on 20.04 and is too old for
+  # its current API on 22.04
+  snap install nvim --classic
+
+restore: |
+  snap remove --purge nvim
+
+execute: |
+  nvim --clean -l "$SPREAD_PATH"/tests/nvim/lsp.lua "$WORKSPACE"

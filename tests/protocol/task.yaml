@@ -1,0 +1,25 @@
+summary: yaml-language-server answers LSP requests over stdio and a TCP socket
+
+prepare: |
+  # serve the workspace's schema over HTTP, for a document to reference by
+  # URL (with its output redirected so spread doesn't wait on it)
+  python3 -m http.server --bind 127.0.0.1 --directory "$WORKSPACE" 8765 > /dev/null 2>&1 &
+  echo $! > http.pid
+  for _ in $(seq 30); do
+    python3 -c 'import urllib.request; urllib.request.urlopen("http://127.0.0.1:8765/schema.json")' && break
+    sleep 1
+  done
+
+restore: |
+  if [ -f http.pid ]; then
+    kill "$(cat http.pid)" || true
+  fi
+  rm -f http.pid
+
+execute: |
+  # over stdio, as editors usually run it - also with a document whose
+  # schema has to be fetched over the network
+  python3 "$SPREAD_PATH"/tests/lib/lsp-client.py --schema-url http://127.0.0.1:8765/schema.json "$WORKSPACE"
+
+  # with the server connecting back to a TCP port the client listens on
+  python3 "$SPREAD_PATH"/tests/lib/lsp-client.py --socket "$WORKSPACE"

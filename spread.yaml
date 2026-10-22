@@ -1,0 +1,103 @@
+project: yaml-language-server-snap
+
+backends:
+  # spread integration for image-garden(1) (https://gitlab.com/zygoon/image-garden)
+  # - downloads and caches official cloud images and boots them under
+  # QEMU/KVM, so there's no manual image-baking. Needs the image-garden snap
+  # (`snap install image-garden`) and /dev/kvm access - GitHub's standard
+  # hosted runners have both (see github.com/zyga/image-garden-action).
+  garden:
+    type: adhoc
+    allocate: |
+      if [ -n "${SPREAD_HOST_PATH-}" ]; then
+        PATH="${SPREAD_HOST_PATH}"
+      fi
+      exec image-garden allocate --spread "$SPREAD_SYSTEM"."$(uname -m)"
+    discard: |
+      if [ -n "${SPREAD_HOST_PATH-}" ]; then
+        PATH="${SPREAD_HOST_PATH}"
+      fi
+      exec image-garden discard "$SPREAD_SYSTEM_ADDRESS"
+    systems:
+      - ubuntu-cloud-24.04:
+          username: ubuntu
+          password: ubuntu
+      - ubuntu-cloud-22.04:
+          username: ubuntu
+          password: ubuntu
+      - ubuntu-cloud-26.04:
+          username: ubuntu
+          password: ubuntu
+      - ubuntu-cloud-20.04:
+          username: ubuntu
+          password: ubuntu
+
+path: /spread/yaml-language-server-snap
+
+exclude:
+  - .git
+  - .github
+  - .agent-shell
+  # image-garden(1) VM images, logs and state, plus spread's own logs, all
+  # left in the repo root by `spread garden:...` runs (see .gitignore) -
+  # without these, spread uploads many GB of VM images into every VM
+  - .image-garden
+  - "*.qcow2"
+  - "*.img"
+  - "*.iso"
+  - "*.log"
+  - "*.run"
+  - "*.user-data"
+  - "*.meta-data"
+  - "*.lock"
+
+# make sure we don't get killed during prepare
+kill-timeout: 30m
+
+environment:
+  CHANNEL/latest_stable: latest/stable
+  CHANNEL/latest_candidate: latest/candidate
+  CHANNEL/latest_beta: latest/beta
+  CHANNEL/latest_edge: latest/edge
+  # installs the newest yaml-language-server_*.snap in the project directory
+  # (from `snapcraft pack`) instead of a store revision
+  CHANNEL/local: local
+  # the snap is strictly confined and only plugs home, so the documents and
+  # schemas it is given must live in the user's home directory
+  WORKSPACE: $HOME/workspace
+
+suites:
+  tests/:
+    summary: spread tests
+    prepare: |
+      # ensure machine is up to date
+      export DEBIAN_FRONTEND=noninteractive
+      # use apt-get to support older Ubuntu releases
+      apt-get update
+      apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" upgrade -y
+      apt-get autoremove --purge -y
+      apt-get install -y snapd python3
+      snap wait system seed.loaded
+
+    prepare-each: |
+      # installs occasionally hit a transient store error (a local snap
+      # still downloads its base) - retry a few times rather than failing
+      # the whole task on a blip
+      if [ "$CHANNEL" = local ]; then
+        install_snap() { snap install --dangerous "$(ls -t $SPREAD_PATH/yaml-language-server_*.snap | head -n 1)"; }
+      else
+        install_snap() { snap install --channel "$CHANNEL" yaml-language-server; }
+      fi
+      n=0
+      until install_snap; do
+        n=$((n + 1))
+        if [ $n -ge 3 ]; then
+          exit 1
+        fi
+        sleep 10
+      done
+      cp -r "$SPREAD_PATH"/tests/lib/workspace "$WORKSPACE"
+
+    restore-each: |
+      snap remove --purge yaml-language-server
+      rm -rf "$WORKSPACE" ~/snap/yaml-language-server
